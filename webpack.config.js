@@ -50,7 +50,12 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 use: [
-                    'babel-loader'
+                    {
+                        loader: 'babel-loader',
+                        options:{
+                            sourceMap: true
+                        }
+                    }
                 ]
             },
             //styles
