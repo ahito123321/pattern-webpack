@@ -4,14 +4,12 @@
   "description": "Summary on the React",
   "main": "src/js/app.jsx",
   "scripts": {
-    "preStart": "rimraf dist && npm install",
-    "build": "webpack --mode production --colors --progress",
-    "buildWatch": "webpack --watch --mode development",
-    "start": "webpack-dev-server --open --mode development"
+    "prod": "webpack --mode production --colors --progress",
+    "dev": "webpack-dev-server --mode development --open --hot --inline --colors --progress"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ahito123321/webpack-starter-without-react"
+    "url": "git+https://github.com/ahito123321/pattern-webpack"
   },
   "keywords": [],
   "author": "Vladimir Liashinsky",
@@ -32,16 +30,16 @@
     "mini-css-extract-plugin": "^0.4.1",
     "node-sass": "^4.9.0",
     "postcss-loader": "^2.1.5",
+    "react-hot-loader": "^4.3.3",
+    "reload-html-webpack-plugin": "^0.1.2",
     "resolve-url-loader": "^2.3.0",
-    "rimraf": "^2.6.2",
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",
     "svg-url-loader": "^2.3.2",
     "uglifyjs-webpack-plugin": "^1.2.7",
     "webpack": "^4.14.0",
     "webpack-cli": "^3.0.8",
-    "webpack-dev-server": "^3.1.4",
-    "yargs": "^12.0.1"
+    "webpack-dev-server": "^3.1.4"
   },
   "dependencies": {
     "jquery": "^3.3.1",

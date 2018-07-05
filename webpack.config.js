@@ -8,150 +8,169 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
 const ImageMinPlugin = require('image-min-plugin').default;
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const argv = require('yargs').argv;
-
-const isDevelopment = argv.mode === 'development';
-const isProduction = !isDevelopment;
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 //main config
-module.exports = {
-    //context way 
-    context: path.resolve(__dirname, 'src'),
-    
-    //point in
-    entry: {
-        //main file app
-        app: [
-            './js/app.jsx',
-            './scss/style.scss'
-        ],
-    },
+module.exports = (env, options) => {
+    const isDevelopment = options.mode === 'development';
+    const isProduction = !isDevelopment;
 
-    //path output files
-    output:{
-        filename: './js/[name].js',
-        path: path.resolve(__dirname, 'app'),
-        publicPath: '../'
-    },
+    let conf = {
 
-    //config webpack-dev-server
-    devServer: {
-        contentBase: './app'
-    },
+        //point in
+        entry: {
+            //main file app
+            app: [
+                path.resolve(__dirname, 'src', 'js', 'app.jsx'),
+                path.resolve(__dirname, 'src', 'scss', 'style.scss') 
+            ]
+        },
 
-    devtool: (isDevelopment) ? 'inline-source-map' : '',
+        //path output files
+        output:{
+            filename: 'js/[name].js',
+            path: path.resolve(__dirname, 'dist'),
+            publicPath: "dist/"
+        },
 
-    //modules
-    module: {
-        rules:[
-            //js
-            {
-                test: /\.jsx?$/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options:{
-                            sourceMap: true
-                        }
-                    }
-                ]
-            },
-            //styles
-            {
-                test: /\.(sc|c|sa)ss$/,
-                use: [
-                    isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            minimize: isProduction
-                        }
-                    },
-                    'postcss-loader',
-                    'sass-loader',
-                    'resolve-url-loader'
-                ]
-            },
-            //images
-            {
-                test: /\.(png|gif|jpe?g)$/,
-                loader:[
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            name: '[path][name].[ext]'
-                        }
-                    },
-                    'img-loader'
-                ]
-            },
-            //fonts
-            {
-                test: /\.(woff|woof2|eot|ttf|otf)$/,
-                loader:[
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            name: '[path][name].[ext]'
-                        }
-                    }
-                ]  
-            },
-            //SVG converter
-            {
-                test: /\.svg$/,
-                loader: 'svg-url-loader'
-            }
-        ]
-    },
+        //config webpack-dev-server
+        devServer: {
+            overlay: true
+        },
 
-    //plugins
-    plugins: [
-        new webpack.ProvidePlugin({
-            '$': 'jquery',
-            'JQuery': 'jquery',
-            'jquery': 'jquery'
-        }),
-        new MiniCssExtractPlugin({
-          filename: './css/[name].css'
-        }),
-        new CopyWebpackPlugin(
-            [
+        devtool: (isDevelopment) ? 'source-map' : '',
+
+        //modules
+        module: {
+            rules:[
+                //js
                 {
-                    from: './img', 
-                    to: 'img'
+                    test: /\.jsx?$/,
+                    use: [
+                        {
+                            loader: 'babel-loader',
+                            options:{
+                                sourceMap: true
+                            }
+                        }
+                    ]
+                },
+                //styles
+                {
+                    test: /\.(sc|c|sa)ss$/,
+                    use: [
+                        isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                root: '.',
+                                minimize: isProduction,
+                                sourceMap: isDevelopment
+                            }
+                        },
+                        'postcss-loader',
+                        {
+                            loader: 'sass-loader',
+                            options: {
+                                sourceMap: isDevelopment
+                            }
+                        }
+                    ]
+                },
+                //images
+                {
+                    test: /\.(png|gif|jpe?g)$/,
+                    loader:[
+                        {
+                            loader: 'file-loader',
+                            options: {
+                                name: '[path][name].[ext]'
+                            }
+                        },
+                        'img-loader'
+                    ]
+                },
+                //fonts
+                {
+                    test: /\.(woff|woof2|eot|ttf|otf)$/,
+                    loader:[
+                        {
+                            loader: 'file-loader',
+                            options: {
+                                name: '[path]/[name].[ext]'
+                            }
+                        }
+                    ]  
+                },
+                //SVG converter
+                {
+                    test: /\.svg$/,
+                    loader: 'svg-url-loader'
                 }
-            ],
-            {
-                ignore: [
+            ]
+        },
+        //plugins
+        plugins: [
+            new webpack.ProvidePlugin({
+                '$': 'jquery',
+                'JQuery': 'jquery',
+                'jquery': 'jquery'
+            }),
+            new MiniCssExtractPlugin({
+                filename: 'css/style.css'
+            }),
+            new CopyWebpackPlugin(
+                [
                     {
-                        glob: './svg/*'
+                        from: path.resolve(__dirname, 'src', 'img'), 
+                        to: 'img'
+                    },
+                    {
+                        from: path.resolve(__dirname, 'src', 'fonts'), 
+                        to: 'fonts'
                     }
-                ]
-            }
-        )
-    ],
-}
-
-//isProduction
-if (isProduction){
-    module.exports.plugins.push(
-        new HtmlWebpackPlugin()
-    );
-    module.exports.plugins.push(
-        new CleanWebpackPlugin(['dist'])
-    );
-    module.exports.plugins.push(
-        new UglifyjsWebpackPlugin({
-            sourceMap: true
-        })
-    );
-    module.exports.plugins.push(
-        new ImageMinPlugin({
-            test: /\.(png|gif|jpe?g|svg)$/
-        })
-    );
-
+                ],
+                {
+                    ignore: [
+                        {
+                            glob: path.resolve(__dirname, 'src', 'svg', '*')
+                        }
+                    ]
+                }
+            )
+        ]
+    };
+    //isProduction
+    if (isProduction){
+        conf.plugins.push(
+            new HtmlWebpackPlugin(
+                {
+                    filename: 'index.html',
+                    inject: false,
+                    hash: true,
+                    template: path.resolve(__dirname, 'src', 'index.html'),
+                    minify:{
+                        removeComments: true,
+                        collapseWhitespace: true,
+                        removeAttributeQuotes: true
+                    }
+                }
+            )
+        );
+        conf.plugins.push(
+            new CleanWebpackPlugin(['dist'])
+        );
+        conf.plugins.push(
+            new UglifyjsWebpackPlugin({
+                sourceMap: true
+            })
+        );
+        conf.plugins.push(
+            new ImageMinPlugin({
+                test: /\.(png|gif|jpe?g|svg)$/
+            })
+        );
+    }
+    return conf;
 }

@@ -1,21 +1,7 @@
+@import 'fonts';
+@import 'vars';
+@import 'default';
+
 body{
-    height: 100%;
-    width: 100%;
-    background-color: rgb(142, 190, 168);
-}
-.temp{
-    width: 500px;
-    height: 500px;
-    background-image: url(../img/img_1.jpg);
-    background-size: contain;
-    transition: all 0.3s ease-out;
-}
-.temp:hover{
-    width: 250px;
-}
-.svgTemp{
-    width: 100px;
-    height: 100px;
-    margin: 0 auto;
-    background-image: url(../img/svg/svg_1.svg);
+    background-color: rgb(236, 190, 190);
 }
