@@ -19,17 +19,16 @@ module.exports = (env, options) => {
     let conf = {
 
         //point in
-        entry: {
-            //main file app
-            app: [
+        entry: 
+            [
+                'react-hot-loader/patch',
                 path.resolve(__dirname, 'src', 'js', 'app.jsx'),
                 path.resolve(__dirname, 'src', 'scss', 'style.scss') 
-            ]
-        },
+            ],
 
         //path output files
         output:{
-            filename: 'js/[name].js',
+            filename: 'js/app.js',
             path: path.resolve(__dirname, 'dist'),
             publicPath: "dist/"
         },
@@ -47,6 +46,7 @@ module.exports = (env, options) => {
                 //js
                 {
                     test: /\.jsx?$/,
+                    exclude: '/node_modules/',
                     use: [
                         {
                             loader: 'babel-loader',
@@ -59,28 +59,30 @@ module.exports = (env, options) => {
                 //styles
                 {
                     test: /\.(sc|c|sa)ss$/,
+                    exclude: '/node_modules/',
                     use: [
                         isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
                         {
                             loader: 'css-loader',
                             options: {
-                                root: '.',
-                                minimize: isProduction,
-                                sourceMap: isDevelopment
+                                url: false,
+                                sourceMap: isDevelopment,
+                                minimize: isProduction
                             }
                         },
                         'postcss-loader',
                         {
-                            loader: 'sass-loader',
+                            loader: "sass-loader", 
                             options: {
-                                sourceMap: isDevelopment
+                                sourceMap: true
                             }
-                        }
+                        }    
                     ]
                 },
                 //images
                 {
                     test: /\.(png|gif|jpe?g)$/,
+                    exclude: '/node_modules/',
                     loader:[
                         {
                             loader: 'file-loader',
@@ -94,11 +96,12 @@ module.exports = (env, options) => {
                 //fonts
                 {
                     test: /\.(woff|woof2|eot|ttf|otf)$/,
+                    exclude: '/node_modules/',
                     loader:[
                         {
                             loader: 'file-loader',
                             options: {
-                                name: '[path]/[name].[ext]'
+                                name: '[path][name].[ext]'
                             }
                         }
                     ]  
@@ -106,12 +109,14 @@ module.exports = (env, options) => {
                 //SVG converter
                 {
                     test: /\.svg$/,
+                    exclude: '/node_modules/',
                     loader: 'svg-url-loader'
                 }
             ]
         },
         //plugins
         plugins: [
+            new webpack.HotModuleReplacementPlugin(),
             new webpack.ProvidePlugin({
                 '$': 'jquery',
                 'JQuery': 'jquery',
