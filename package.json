@@ -4,7 +4,7 @@
   "description": "Summary on the React",
   "main": "src/js/app.jsx",
   "scripts": {
-    "prod": "webpack --mode production --colors --progress",
+    "build": "webpack --mode production --colors --progress",
     "dev": "webpack-dev-server --mode development --open --hot --inline --colors --progress"
   },
   "repository": {

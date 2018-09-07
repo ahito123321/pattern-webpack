@@ -22,7 +22,7 @@ module.exports = (env, options) => {
         entry: 
             [
                 'react-hot-loader/patch',
-                path.resolve(__dirname, 'src', 'js', 'app.jsx'),
+                path.resolve(__dirname, 'src', 'js', 'index.js'),
                 path.resolve(__dirname, 'src', 'scss', 'style.scss') 
             ],
 
@@ -61,7 +61,12 @@ module.exports = (env, options) => {
                     test: /\.(sc|c|sa)ss$/,
                     exclude: '/node_modules/',
                     use: [
-                        isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
+                        isDevelopment ? 'style-loader' : {
+                                                            loader: MiniCssExtractPlugin.loader,
+                                                            options: {
+                                                                publicPath: '../'
+                                                            }
+                                                        },
                         {
                             loader: 'css-loader',
                             options: {
